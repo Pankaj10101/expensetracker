@@ -1,3 +1,4 @@
+import React, { useEffect, useCallback } from "react";
 import Navbar from "./Components/Header/Navbar";
 import "./App.css";
 import SignUp from "./Components/SignUp/SignUp";
@@ -14,15 +15,15 @@ import {
 } from "./Store/Slices/AuthSlice";
 import { setExpenses } from "./Store/Slices/ExpenseSlice";
 import axios from "axios";
-import { useEffect } from "react";
 
 function App() {
-  const UserMail = localStorage.getItem('userName')
-  const API = `https://expense-tracker-6667c-default-rtdb.firebaseio.com/${UserMail}`
+  const UserMail = localStorage.getItem("userName");
+  const API = `https://expense-tracker-6667c-default-rtdb.firebaseio.com/${UserMail}`;
 
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.auth.isLogin);
-  const getProfileData = async (token) => {
+
+  const getProfileData = useCallback(async (token) => {
     try {
       const response = await axios.post(
         "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDo-GMUlH9BQyAiH-8WzkaPymtrR5opfKw",
@@ -34,7 +35,7 @@ function App() {
       if (data.users) {
         const { displayName, photoUrl } = data.users[0];
         if (displayName && photoUrl) {
-          console.log(displayName, photoUrl)
+          console.log(displayName, photoUrl);
           dispatch(setIsCompleteProfile(true));
           dispatch(setProfileData({ name: displayName, photo: photoUrl }));
         }
@@ -44,40 +45,40 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [dispatch]);
 
-  const getExpenses = async ()=>{
-    const response = await axios(`${API}.json`)
-    const data = response.data
+  const getExpenses = useCallback(async () => {
+    const response = await axios(`${API}.json`);
+    const data = response.data;
     if (data) {
       const expenseData = Object.values(data);
       dispatch(setExpenses(expenseData));
     } else {
       dispatch(setExpenses([]));
     }
-  }
+  }, [API, dispatch]);
 
   useEffect(() => {
     const token = localStorage.getItem("loginId");
     if (token) {
       getProfileData(token);
-      getExpenses()
+      getExpenses();
       dispatch(setLoginStatus(true));
     } else {
       dispatch(setLoginStatus(false));
     }
-  }, [isLogin]);
+  }, [isLogin,dispatch, getExpenses, getProfileData]);
 
   return (
     <>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<UpdateProfile />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/sign-in" element={<SignIn />} />
-        </Routes>
-        <ToastContainer /> 
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<UpdateProfile />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+      </Routes>
+      <ToastContainer />
     </>
   );
 }
