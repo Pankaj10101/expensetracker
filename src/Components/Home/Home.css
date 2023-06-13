@@ -1,0 +1,48 @@
+.total-expenses {
+    text-align: right;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .total-amount {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  .expenses-container {
+    overflow: auto;
+  }
+  .expenses-container {
+    height: 50vh;
+    overflow-y: hidden;
+  }
+  
+  .expenses-container:hover {
+    overflow-y: auto;
+  }
+  
+
+  .expenses-container::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+  }
+
+  .expenses-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 3px;
+  }
+  
+
+  .expenses-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+  
+
+  .expenses-container::-webkit-scrollbar {
+    width: 6px;
+    background-color: #f5f5f5;
+  }
+  
+  .expenses-container:hover::-webkit-scrollbar {
+    background-color: #e0e0e0;
+  }
+  
